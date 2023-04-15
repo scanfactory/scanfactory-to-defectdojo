@@ -2,14 +2,6 @@
 
 Скрипт, который импортирует последние сгенерированные отчеты Nessus в Defect Dojo
 
-## Запуск
-
-1. Установить зависимости  
-   `python3 -m pip install -r requirements.txt`  
-   `pip3 install -r requirements.txt`  
-2. Настроить .env файл
-3. Запустить
-
 ## Аргументы командной строки
 
 При запуске кроном:  
@@ -85,10 +77,3 @@ HEALTH_CHECK_URL=
 # Leave blank if you only need the url
 HEALTH_CHECK_ENDPOINTS="start end"
 ```
-
-## Возможные проблемы
-
-1. Проблемы при первом запуске - взгляните на логи  
-2. Проблемы с дедупликацией отчетов в Defect Dojo  
-    Возможные варианты решения  
-    [Первый](https://github.com/DefectDojo/django-DefectDojo/issues/6407) [Второй](https://github.com/DefectDojo/django-DefectDojo/issues/2772)  
