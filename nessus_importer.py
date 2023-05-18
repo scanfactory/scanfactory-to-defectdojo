@@ -226,11 +226,11 @@ async def get_alive_hosts_for_project(token: str, cts: Const, project_id: str, c
     return project_id, [item.get("ipv4") for item in response.json()["items"] if item.get("ipv4")]
 
 
-async def get_latest_task_for_host(token: str, cts: Const, project_id: str, ipv4: str, client: httpx.AsyncClient) -> tuple[str, list[str] | None]:
+async def get_latest_task_for_host(token: str, cts: Const, project_id: str, ipv4: str, client: httpx.AsyncClient) -> tuple[str, str | None]:
     response = await client.get(f"{cts.SCANFACTORY_URL}/api/tasks/?project_id={project_id}&type=infrascan&sort=-mdate&status=6&target_id={ipv4}&token={token}")
     if response.status_code != 200:
         logging.error(f"Error getting tasks for project '{cts.client_id}:{project_id}:{ipv4}': {response.text}")
-        return project_id, []
+        return project_id, None
     data = response.json()
     return project_id, data["items"][0]["id"] if data["count"] else None
 
