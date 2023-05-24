@@ -232,14 +232,16 @@ async def get_latest_task_for_host(token: str, cts: Const, project_id: str, ipv4
         logging.error(f"Error getting tasks for project '{cts.client_id}:{project_id}:{ipv4}': {response.text}")
         return project_id, None, {}
     data = response.json()
-    task: dict[str, Any] = data.get("items", [{}, ])[0]
+    task: dict[str, Any] = data.get("items", [{}, ])
+    if task:
+        task = task[0]
     if not task:
         return project_id, None, {}
 
     task_id = task.get("id", None)
     infrascan_reports: list[str] = task.get("uploaded_files", [])
 
-    return project_id, task_id, {report: "nessus" if report.endswith(".xml") else "csv" for report in infrascan_reports if report.endswith(".xml") or report.endswith(".csv")}
+    return project_id, task_id, {"nessus" if report.endswith(".xml") else "csv": report for report in infrascan_reports if report.endswith(".xml") or report.endswith(".csv")}
 
 
 async def get_defect_dojo_token(creds: Credentials, cts: Const) -> str:
