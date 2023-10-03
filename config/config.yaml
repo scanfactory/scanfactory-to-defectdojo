@@ -1,0 +1,40 @@
+base_config:
+  # Не рекомендуется устанавливать выше 5 во имя избежания ошибок
+  max_requests: 3
+  # !! Будьте внимательны !! в более поздних версиях 'Nessus scan' называется 'Tenable Scan'
+  # Это поле необходимо изменить в соответствии с версией вашего 'Defect Dojo'
+  # для версий >= 2.25.0 установить "Tenable Scan"
+  scan_type: "Tenable Scan"
+  minimum_severity: "info" # Info, Low, Medium, High, Critical
+  # https://demo.defectdojo.org/api/v2/doc/ -> /import-scan/
+  # if False then this 2 values will not be used
+  auto_create_context: True
+  deduplication_on_engagement: True
+
+  # ID админа, который может создавать продукты и engagements
+  lead_user_id: 1
+
+
+product_creation_config:
+  # Этот конфиг соответствует API Defect Dojo. Более подробно смотрите в документации
+  # https://demo.defectdojo.org/api/v2/oa3/swagger-ui/ POST products
+  tags: [Scanfactory]
+  # Продукты будут называться так же, как и проекты в Scanfactory
+  # В описании можете использовать плейсхолдер {}, который будет заменен на имя проекта
+  # Если же такого плейсхолдера нет, то Имя проекта будет добавлено в конец строки
+  description: 'Продукт проекта Scanfactory "{}"'
+  prod_numeric_grade: 0
+  business_criticality: "very high"
+  platform:
+  lifecycle:
+  origin:
+  user_records:
+  revenue:
+  external_audience: False
+  internet_accessible: False
+  enable_product_tag_inheritance: False
+  enable_simple_risk_acceptance: False
+  enable_full_risk_acceptance: True
+  disable_sla_breach_notifications: False
+  prod_type: 1
+  sla_configuration: 1

@@ -1,1 +1,7 @@
 .trunk
+tmp*
+temp*
+*.log
+__pycache__/
+my.env
+products.json
