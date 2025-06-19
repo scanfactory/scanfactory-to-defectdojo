@@ -9,11 +9,20 @@ import asyncio
 
 def check_access_or_exit(env: DDojoEnvironment) -> None:
     headers = {"Authorization": f"Token {env.token}"}
-    response = httpx.get(f"{env.url}/api/v2/users/", headers=headers)
-    if response.status_code == 200:
-        logging.info("Успешная авторизация в Defect Dojo.")
-    else:
-        logging.critical("Ошибка доступа к Defect Dojo. Проверьте адрес и API ключ.")
+    logging.info(
+        f"DD env.url: {env.url}. DD token: {env.token[:5] if env.token else 'null'}...{env.token[-5:] if env.token else 'null'}"
+    )
+    try:
+        response = httpx.get(f"{env.url}/api/v2/users/", headers=headers)
+        if response.status_code == 200:
+            logging.info("Успешная авторизация в Defect Dojo.")
+        else:
+            logging.critical(
+                "Ошибка доступа к Defect Dojo. Проверьте адрес и API ключ."
+            )
+            exit(1)
+    except Exception as err:
+        logging.critical(f"Ошибка доступа к Defect Dojo: {err}")
         exit(1)
 
 
@@ -132,20 +141,29 @@ async def push_all_reports(
             await task
 
 
-async def check_engagement(env: DDojoEnvironment, product: Product, client: httpx.AsyncClient) -> bool:
+async def check_engagement(
+    env: DDojoEnvironment, product: Product, client: httpx.AsyncClient
+) -> bool:
     try:
         response = await client.get(
-            f"{env.url}/api/v2/engagements/{product.engagement_id}/", headers={"Authorization": f"Token {env.token}"}
+            f"{env.url}/api/v2/engagements/{product.engagement_id}/",
+            headers={"Authorization": f"Token {env.token}"},
         )
     except Exception:
-        logging.exception(f"Ошибка проверки Engagement '{product.engagement_id}' для проекта {product.project_id}. Для него не будут импортированы отчеты.")
+        logging.exception(
+            f"Ошибка проверки Engagement '{product.engagement_id}' для проекта {product.project_id}. Для него не будут импортированы отчеты."
+        )
         return False
     if response.status_code != 200:
-        logging.error(f"Engagement с ID '{product.engagement_id}' не найден: HTTP {response.status_code}")
+        logging.error(
+            f"Engagement с ID '{product.engagement_id}' не найден: HTTP {response.status_code}"
+        )
         return False
     data: dict[str, Any] = response.json()
     if data.get("active", False):
         logging.info(f"Engagement {product.engagement_id} активен")
         return True
-    logging.error(f"Engagement {product.engagement_id} не активен, создайте другой активный engagement для проекта {product.project_id}")
+    logging.error(
+        f"Engagement {product.engagement_id} не активен, создайте другой активный engagement для проекта {product.project_id}"
+    )
     return False
