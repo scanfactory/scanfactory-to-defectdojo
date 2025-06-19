@@ -69,7 +69,7 @@ def parse_args() -> Args:
         default=2,
         help="Lowest level of logging, defaults to 2 - INFO. Possible values are [1 - 5]: 1 - DEBUG, 2 - INFO, 3 - WARNING, 4 - ERROR, 5 - CRITICAL",
     )
-    # TODO: Добавить дебаг режим 
+    # TODO: Добавить дебаг режим
     # parser.add_argument(
     #     "--debug",
     #     action="store_true",

@@ -41,7 +41,10 @@ async def main():
     limiter = asyncio.Semaphore(config.max_requests)
 
     async with httpx.AsyncClient(
-        follow_redirects=True, headers={"Accept": "application/json"}, verify=False, timeout=25
+        follow_redirects=True,
+        headers={"Accept": "application/json"},
+        verify=False,
+        timeout=25,
     ) as client:
         await update_sf_env_with_token(sf_env)
         if args.projects:

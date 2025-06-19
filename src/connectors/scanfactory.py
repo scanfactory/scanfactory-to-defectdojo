@@ -22,8 +22,8 @@ async def update_sf_env_with_token(env: SFEnvironment) -> None:
                     "Content-Type": "application/x-www-form-urlencoded",
                 },
             )
-        except Exception:
-            logging.critical("Ошибка выполнения авторизации в Scanfactory.")
+        except Exception as err:
+            logging.critical("Ошибка выполнения авторизации в Scanfactory: ", exc_info=err)
             exit(1)
         if response.status_code != 200 or "error" in response.text:
             logging.critical(
@@ -38,7 +38,7 @@ async def get_projects(
     env: SFEnvironment, client: httpx.AsyncClient
 ) -> list[tuple[str, str]] | None:
     try:
-        response = await client.get(f"{env.sf_url}/api/projects/?token={env.token}")
+        response = await client.get(f"{env.sf_url}/api/projects/", headers={"Authorization": f"Bearer {env.token}"})
     except Exception as err:
         logging.critical(f"Check your scanfactory url and try again: {err}")
         exit(1)
@@ -58,7 +58,7 @@ async def get_alive_hosts_for_project(
 ) -> tuple[Product, list[str]]:
     try:
         response = await client.get(
-            f"{env.sf_url}/api/hosts/?project_id={product.project_id}&alive=1&token={env.token}"
+            f"{env.sf_url}/api/hosts/?project_id={product.project_id}&alive=1", headers={"Authorization": f"Bearer {env.token}"}
         )
     except Exception:
         logging.exception(f"Ошибка получения хостов проекта {product.project_id}")
@@ -102,10 +102,9 @@ async def get_latest_task_for_host(
             f"project_id={product.project_id}&"
             "tool=infrascan&"
             "sort=-mdate&"
-            "status=6&"
+            "status=130&"
             f"host={ipv4}&"
-            "limit=1&"
-            f"token={env.token}"
+            "limit=1", headers={"Authorization": f"Bearer {env.token}"}
         )
     except Exception:
         logging.exception(
@@ -175,8 +174,8 @@ async def update_deliverable_with_report(
 ) -> None:
     async with client.stream(
         method="GET",
-        url=f"{env.sf_url}/api/{deliverable.path}?token={env.token}",
-        headers={"accept": deliverable.content_type},
+        url=f"{env.sf_url}/api/{deliverable.path}",
+        headers={"accept": deliverable.content_type, "Authorization": f"Bearer {env.token}"},
     ) as stream:
         content = await stream.aread()
         if b"File not found" in content or stream.status_code != 200:
