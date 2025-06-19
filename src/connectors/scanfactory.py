@@ -10,7 +10,7 @@ async def update_sf_env_with_token(env: SFEnvironment) -> None:
     async with httpx.AsyncClient(follow_redirects=True) as client:
         try:
             response = await client.post(
-                f"{env.kc_url}/auth/realms/{env.realm}/protocol/openid-connect/token",
+                f"{env.kc_url}/realms/{env.realm}/protocol/openid-connect/token",
                 data={
                     "client_id": env.client_id,
                     "username": env.username,
