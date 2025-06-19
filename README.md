@@ -108,8 +108,10 @@ product_creation_config:
 
 ```conf
 KEYCLOAK_URL=https://keycloak.domain.com
+KEYCLOAK_REALM=factory
 USERNAME=  # Юзернейм админа
 PASSWORD=
+
 SCANFACTORY_URL=https://project.sf-cloud.ru
 
 # Адрес по которому расположен Defect Dojo
